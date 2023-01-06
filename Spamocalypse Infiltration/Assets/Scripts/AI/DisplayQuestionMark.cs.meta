@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 17ddd11a232c25644b57d8e05f02a257
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - questionMark: {fileID: 4300000, guid: efb63c197c71af04e82e8f8d2ed0b303, type: 3}
+  - exclamationMark: {fileID: 4300002, guid: 51730bbe06e3e29458f6fa941250327b, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
