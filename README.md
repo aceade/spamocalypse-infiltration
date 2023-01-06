@@ -44,7 +44,7 @@ The current mechanism is to use the built-in collision system, in a similar mann
 - Spotlights have no intensity falloff to compensate for their shorter range. This means that their contribution towards being spotted is fixed; if you stand in a torch beam, you are going to be noticed!
 - Point lights (lights which emit in all directions) will contribute according to the distance from the player. So, don't stand under a streetlamp!
 
-The [Sun](/Spamocalypse%20Infiltration/Assets/Scripts/Lighting/Sun.cs) (or moon) works in a slightly different manner:
+The [Sun](./Spamocalypse%20Infiltration/Assets/Scripts/Lighting/Sun.cs) (or moon) works in a slightly different manner:
 - It requires an assigned list of ICalculateLight instances, though it can gather them from the scene.
 - At each physics timestep, check if it can see each of them by casting a Ray towards them. If the ray hits the object (instead of a building), then it can.
 - If it can, increment their illumination level by a fixed amount.
@@ -67,4 +67,30 @@ Alert noises consisted of the following:
 - Spammer death noises.
 - Decoys/Sockpuppets.
 
+### NPC AI
+The enemy NPCs could be broken down into the following types:
+- [Spammer](./Spamocalypse%20Infiltration/Assets/Scripts/AI/SpammerFSM.cs). The base class. Basically zombies that lurched around looking for a non-spammer to vomit on. If they heard a decoy, they would investigate, stare at it a bit, and then look elsewhere for a bit. After a certain number of false attempts, they would ignore the decoy and search elsewhere.
+- [Spambot](./Spamocalypse%20Infiltration/Assets/Scripts/AI/Spambot.cs). Even less intelligent than the spammers, but far tankier and possessing a search light.
+- [Spammerised Moderator](./Spamocalypse%20Infiltration/Assets/Scripts/AI/Moderator.cs). Former moderators who had been forcibly turned, and retained enough intelligence to trace a decoy's launch position. They were also immune to Firewalls.
 
+I had originally planned to include the following, but never did:
+- Phishers. Rooptop-dwelling Gremlins that would sit and wait for their phishing rods to snare the player, and then sound a general alert to everyone. Partially inspired by the Barnacles of Half-Life.
+- The Washing Machine Guy. Inspired by a particularly obnoxious spammer who kept clogging up the Unity development forums back in 2014-2015 with posts about washing machine repairs. This guy would have served as a boss, and be sufficiently aware of the meaning of SockPuppets to hurl an exploding washing machine into the darkest corners of the room in an attempt to flush out the player.
+
+### Sound effects
+Sound effects for the AI were generally one of the following:
+- Their voice.
+- Any movement noises. This only really applied to the Spambot class, as they were visually a giant robot.
+
+Voice lines were originally "voiced" by a text-to-speech program with particular accents (Scottish, Northern England, or just plain old robotic) and a robotic effect applied in Audacity. The lines could be broken down into the following categories, based on their current state:
+- Idle/patrolling sounds
+- Saw something dodgy
+- Heard something dodgy
+- Realising they had been tricked by a decoy
+- Attacking lines
+- Attacked
+- Dying
+- Bumped into the player (e.g. "What the?!?")
+- Found the player without bumping into them.
+
+These were defined using Unity's ScriptableObject class, and can be found in the [SpammerVoice](./Spamocalypse%20Infiltration/Assets/Scripts/AI/SpammerVoice.cs) class. This allows the voice clips to be defined once and then shared across multiple GameObjects.
