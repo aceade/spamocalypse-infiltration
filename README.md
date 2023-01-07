@@ -13,7 +13,7 @@ However, I learned a lot on it. So, I decided to redo it and update the graphics
 
 
 ## Existing Mechanisms
-The core concept was, and still is, that the player has to stick to the shadows and move as quietly as possible. To this end, I spent some time trying to get sound and line-of-sight detection to work. Those have been documented in [DETECTION](./DETECTION.MD).
+The core concept was, and still is, that the player has to stick to the shadows and move as quietly as possible. To this end, I spent some time trying to get sound and line-of-sight detection to work. Those have been documented in [DETECTION](./DETECTION.MD). Player-specific code is documented in [PLAYER](./PLAYER.md).
 
 ### NPC AI
 The enemy NPCs could be broken down into the following types:
@@ -24,6 +24,14 @@ The enemy NPCs could be broken down into the following types:
 I had originally planned to include the following, but never did:
 - Phishers. Rooptop-dwelling Gremlins that would sit and wait for their phishing rods to snare the player, and then sound a general alert to everyone. Partially inspired by the Barnacles of Half-Life.
 - The Washing Machine Guy. Inspired by a particularly obnoxious spammer who kept clogging up the Unity development forums back in 2014-2015 with posts about washing machine repairs. This guy would have served as a boss, and be sufficiently aware of the meaning of SockPuppets to hurl an exploding washing machine into the darkest corners of the room in an attempt to flush out the player.
+
+Bots could be in one of the following states:
+- Idle
+- Patrolling
+- Searching
+- Flamed. They appear to have burst into flames.
+- Dead. The game manager would respawn them after a certain delay (since spammers _will_ create new accounts).
+- Bamboozled. After being hit by a logic bomb (a flashbang analogue), they would be too frazzled to do anything for a bit.
 
 ### Sound Effects
 Sound effects for the AI were generally one of the following:
@@ -43,13 +51,5 @@ Voice lines were originally "voiced" by a text-to-speech program with particular
 
 These were defined using Unity's ScriptableObject class, and can be found in the [SpammerVoice](./Spamocalypse%20Infiltration/Assets/Scripts/AI/SpammerVoice.cs) class. This allows the voice clips to be defined once and then shared across multiple GameObjects.
 
-### Player Interaction Highlighting
-This is an adaptation/extension of [one of my other repos](https://github.com/aceade/Unity-Player-Highlighting/), where I attempted to replicate Thief's highlighting system of making objects glow when the player is looking directly at them.
-
-The core of this is the [PlayerInteraction](./Spamocalypse%20Infiltration/Assets/Scripts/Player/Interactions/PlayerInteraction.cs) abstract class. This handles collision detection with the player, highlighting the object the player should look at, and freezing/unfreezing the player if necessary. Subclasses include the following:
-- [ToggleLights](./Spamocalypse%20Infiltration/Assets/Scripts/Player/Interactions/ToggleLights.cs). Toggles one or more lights, updating the light detection system to go with it.
-- [ReadItem](./Spamocalypse%20Infiltration/Assets/Scripts/Player/Interactions/ReadItem.cs). Displays an image of a page with text; the player's movement and rotation are frozen while doing this. The game is also paused while this happens.
-- [Safe](./Spamocalypse%20Infiltration/Assets/Scripts/Player/Interactions/Safe.cs). Interacting with this would pause time, movement and rotation, allowing the player to use the keypad. Safe codes were inevitably written down on a note somewhere in the level.
-
-## New mechanisms (if any)
+## New Mechanisms
 TODO
