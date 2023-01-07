@@ -43,4 +43,13 @@ Voice lines were originally "voiced" by a text-to-speech program with particular
 
 These were defined using Unity's ScriptableObject class, and can be found in the [SpammerVoice](./Spamocalypse%20Infiltration/Assets/Scripts/AI/SpammerVoice.cs) class. This allows the voice clips to be defined once and then shared across multiple GameObjects.
 
-### Player Interaction
+### Player Interaction Highlighting
+This is an adaptation/extension of [one of my other repos](https://github.com/aceade/Unity-Player-Highlighting/), where I attempted to replicate Thief's highlighting system of making objects glow when the player is looking directly at them.
+
+The core of this is the [PlayerInteraction](./Spamocalypse%20Infiltration/Assets/Scripts/Player/Interactions/PlayerInteraction.cs) abstract class. This handles collision detection with the player, highlighting the object the player should look at, and freezing/unfreezing the player if necessary. Subclasses include the following:
+- [ToggleLights](./Spamocalypse%20Infiltration/Assets/Scripts/Player/Interactions/ToggleLights.cs). Toggles one or more lights, updating the light detection system to go with it.
+- [ReadItem](./Spamocalypse%20Infiltration/Assets/Scripts/Player/Interactions/ReadItem.cs). Displays an image of a page with text; the player's movement and rotation are frozen while doing this. The game is also paused while this happens.
+- [Safe](./Spamocalypse%20Infiltration/Assets/Scripts/Player/Interactions/Safe.cs). Interacting with this would pause time, movement and rotation, allowing the player to use the keypad. Safe codes were inevitably written down on a note somewhere in the level.
+
+## New mechanisms (if any)
+TODO
