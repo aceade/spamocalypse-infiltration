@@ -58,3 +58,5 @@
 # Crashlytics generated file
 **/crashlytics-build.properties
 
+**/*.blend1*
+**/*.blend2*
