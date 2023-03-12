@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
 /// <summary>
-/// A static class to manage things like tags and layers
+/// A static class to manage things like tags and layers. This is NOT attached to anything.
 /// </summary>
 
 public class GameTagManager : MonoBehaviour 
@@ -103,10 +101,12 @@ public class GameTagManager : MonoBehaviour
 	public static string musicVolume = "MusicVolume";
 	public static string mouseSensitivity = "MouseSensitivity";
 
+
 	/// <summary>
 	/// Changes the level, and loads the relevant navmesh.
 	/// </summary>
 	/// <param name="newLevel">New level.</param>
+	/// 
 	public static void ChangeLevel(string newLevel)
 	{
 		SceneManager.LoadScene(newLevel);
