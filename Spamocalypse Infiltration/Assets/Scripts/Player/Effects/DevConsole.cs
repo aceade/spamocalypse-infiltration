@@ -69,11 +69,11 @@ public class DevConsole : MonoBehaviour {
         #if DEVELOPMENT_BUILD || DEBUG
             GameTagManager.LogMessage("Development build, cheats are available");
         #else
-            GameManager.LogMessage("Hiding some developer console controls");
+            GameTagManager.LogMessage("Hiding some developer console controls");
             haxPanel.gameObject.SetActive(false);
             levelPanel.gameObject.SetActive(false);
-            controlsPanel.transform.FindChild("Hax Button").gameObject.SetActive(false);
-            controlsPanel.transform.FindChild("Levels Button").gameObject.SetActive(false);
+            controlsPanel.transform.Find("Hax Button").gameObject.SetActive(false);
+            controlsPanel.transform.Find("Levels Button").gameObject.SetActive(false);
         #endif
 	}
 	

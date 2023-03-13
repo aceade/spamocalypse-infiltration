@@ -95,7 +95,7 @@ public class MyBuildPipeline {
     {
         GameTagManager.LogMessage("Creating Mac OSX build");
         string fileName = MAC_FILENAME + dateString + ".app";
-        BuildTarget target = BuildTarget.StandaloneOSXIntel64;
+        BuildTarget target = BuildTarget.StandaloneOSX;
         BuildPipeline.BuildPlayer(levelsToBuild, path + fileName, target, buildingOptions);
     }
 }

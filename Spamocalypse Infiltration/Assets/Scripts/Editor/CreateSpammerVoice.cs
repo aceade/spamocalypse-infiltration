@@ -71,7 +71,7 @@ public class CreateSpammerVoice : EditorWindow {
 
 	void OnGUI()
 	{
-		template = (SpammerVoice) EditorGUILayout.ObjectField("Template", template, typeof(SpammerVoice));
+		template = (SpammerVoice) EditorGUILayout.ObjectField("Template", template, typeof(SpammerVoice), true);
 
 		assetName = GUILayout.TextField(assetName);
 		showPatSounds = EditorGUILayout.Foldout(showPatSounds, "Patrolling clips");
@@ -103,7 +103,7 @@ public class CreateSpammerVoice : EditorWindow {
 				for (int i = 0; i < theList.Count; i++)
 				{
 					EditorGUILayout.BeginHorizontal ();
-					theList [i] = (AudioClip)EditorGUILayout.ObjectField (theList [i], typeof(AudioClip));
+					theList [i] = (AudioClip)EditorGUILayout.ObjectField (theList [i], typeof(AudioClip), true);
 					if (GUILayout.Button ("Remove"))
 					{
 						theList.RemoveAt (i);
@@ -113,7 +113,7 @@ public class CreateSpammerVoice : EditorWindow {
 
 			}
 			EditorGUILayout.BeginHorizontal ();
-			newClip = (AudioClip)EditorGUILayout.ObjectField ("New voice clip", newClip, typeof(AudioClip));
+			newClip = (AudioClip)EditorGUILayout.ObjectField ("New voice clip", newClip, typeof(AudioClip), true);
 			if (GUILayout.Button ("Add"))
 			{
 				if (newClip != null)
