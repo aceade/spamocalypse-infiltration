@@ -6,7 +6,6 @@ jobs:
   build:
     name: Build my project ✨
     runs-on: ubuntu-latest
-    projectPath: "Spamocalypse Infiltration"
     steps:
       # Checkout
       - name: Checkout repository
@@ -39,6 +38,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: WebGL
+          projectPath: "Spamocalypse Infiltration"
 
       # Output
       - uses: actions/upload-artifact@v2
