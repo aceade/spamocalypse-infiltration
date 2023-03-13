@@ -6,7 +6,7 @@ jobs:
   build:
     name: Build my project ✨
     runs-on: ubuntu-latest
-    project-path: "Spamocalypse Infiltration"
+    projectPath: "Spamocalypse Infiltration"
     steps:
       # Checkout
       - name: Checkout repository
