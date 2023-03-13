@@ -60,9 +60,10 @@ public class Briefing : MonoBehaviour {
 	
 	public void FinishBriefing()
 	{
+		Debug.LogFormat("Shut up and get moving!");
 		manager.EnableAllBots();
 		manager.EnablePlayer();
-        manager.StartMusic();
+        //manager.StartMusic();
         voice.StopClip();
 		briefingCanvas.gameObject.SetActive(false);
 		Cursor.visible = false;

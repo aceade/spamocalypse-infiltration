@@ -6,6 +6,9 @@ using UnityEngine.UI;
 /// Handles player movement.
 /// </summary>
 
+[RequireComponent(typeof(CalculateLight))]
+[RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(PlayerMap))]
 public class PlayerControl : MonoBehaviour {
 
 	Transform myTransform;
@@ -61,13 +64,9 @@ public class PlayerControl : MonoBehaviour {
     Vector3 jumpPosition;
     const float maxJumpTime = 1.5f;
 
-	public Text healthbar;
-	public Text breathBar;
-	public Text objectiveText;
+	public UIManager uiManager;
 
     bool canPause = true;
-	public Canvas pauseCanvas;
-	public GameObject playerCanvas;
 	
 	public DevConsole devConsole;
 
@@ -151,7 +150,7 @@ public class PlayerControl : MonoBehaviour {
         DisplayObjectives();
 
 		playerInventory = GetComponent<Inventory>();
-		healthbar.text = string.Format("Health: {0}", health);
+		uiManager.ShowPlayerHealth(health);
 		Cursor.visible = false;
 	}
 	
@@ -257,7 +256,7 @@ public class PlayerControl : MonoBehaviour {
 				if (endurance < maxEndurance)
 				{
 					endurance += Time.deltaTime;
-					breathBar.text = string.Format("Breath: {0}", (endurance / maxEndurance).ToString("#.##") );
+					uiManager.ShowPlayerBreath(endurance, maxEndurance);
 
 					if (playerVoice.isBreathing && endurance > 10)
 					{
@@ -272,7 +271,7 @@ public class PlayerControl : MonoBehaviour {
 				if (endurance > 0)
 				{
 					endurance -= ((currentMovement == MoveType.running ? 5f : 0f) * Time.deltaTime);
-					breathBar.text = string.Format("Breath: {0}",(endurance / maxEndurance).ToString("#.##"));
+					uiManager.ShowPlayerBreath(endurance, maxEndurance);
 					if (!myAudio.isPlaying && currentMovement != MoveType.sneaking)
 					{
 						Invoke("ChangeMovementSound", 0.3f);
@@ -544,11 +543,10 @@ public class PlayerControl : MonoBehaviour {
 	{
 		GameTagManager.LogMessage("Player took {0} points of {1} damage", damage, type);
 		health -= Mathf.RoundToInt(damage * GameTagManager.GetDifficultyMultiplier());
-		healthbar.text = string.Format("Health: {0}", health);
+		uiManager.ShowPlayerHealth(health);
 
 		if (health <= 0)
 		{
-			healthbar.text = string.Format("You died from a {0} attack", type);
 			manager.FailMission(true);
 		}
 	}
@@ -558,8 +556,7 @@ public class PlayerControl : MonoBehaviour {
 	/// </summary>
 	public void PauseGame()
 	{
-		pauseCanvas.gameObject.SetActive(true);
-		playerCanvas.gameObject.SetActive(false);
+		uiManager.TogglePauseCanvas(true);
 		canPlayerAttack = false;
         canPause = false;
 		myAudio.Stop();
@@ -572,8 +569,7 @@ public class PlayerControl : MonoBehaviour {
 	/// </summary>
 	public void ResumeGame()
 	{
-		pauseCanvas.gameObject.SetActive(false);
-		playerCanvas.gameObject.SetActive(true);
+		uiManager.TogglePauseCanvas(false);
 		manager.Resume();
 		StartCoroutine(DelayResume());
 	}
@@ -606,40 +602,14 @@ public class PlayerControl : MonoBehaviour {
 
 	public void DisplayObjectives()
 	{
-		objectiveText.text = string.Empty;
-		for (int i = 0; i < manager.objectives.Count; i++)
-		{
-			string text = string.Concat(manager.objectives[i].ToString(), "\n");
-			objectiveText.text += text;
-		}
+		uiManager.DisplayObjectives(manager.objectives);
 	}
 
 	public void Save()
 	{
 		GameTagManager.LogMessage("Player is saving");
 		manager.SaveGame(health);
-		StartCoroutine(WaitForSave());
-	}
-
-    /// <summary>
-    /// Disable buttons while waiting to save.
-    /// </summary>
-    /// <returns>The for save.</returns>
-	IEnumerator WaitForSave()
-	{
-		var buttons = pauseCanvas.GetComponentsInChildren<Button>();
-		for (int i = 0; i < buttons.Length; i++)
-		{
-			buttons[i].interactable = false;
-		}
-		while (GameTagManager.isSaving)
-		{
-			yield return new WaitForSeconds(0.1f);
-		}
-		for (int i = 0; i < buttons.Length; i++)
-		{
-			buttons[i].interactable = true;
-		}
+		uiManager.Save();
 	}
 
 	public void Restart()
@@ -655,7 +625,6 @@ public class PlayerControl : MonoBehaviour {
 	{
         myAudio.Stop();
 		GameTagManager.PauseGame();
-		playerCanvas.SetActive(false);
 		GameTagManager.LogMessage("Showing Map: Player Map is {0}", myMap);
 		myMap.ActivateMap();
 	}
@@ -682,17 +651,12 @@ public class PlayerControl : MonoBehaviour {
 	/// <returns>The map.</returns>
 	public void HideMap()
 	{
-		// this is a hacky workaround for the Canvas apparently being unassigned
-		if (playerCanvas == null)
-		{
-			playerCanvas = GameObject.Find("UI").transform.Find("Player Canvas").gameObject;
-			GameTagManager.LogMessage("playerCanvas was unassigned. It is now {0}", playerCanvas);
-		}
 		if (myMap == null)
 		{
 			GameTagManager.LogMessage("PlayerMap is null?!?!? Should be {0}", gameObject.GetComponent<PlayerMap>());
 			myMap = GetComponent<PlayerMap>();
 		}
+		uiManager.ShowPlayerCanvas(true);
 		myMap.DeactivateMap();
         ResumeGame();
 	}
@@ -734,10 +698,6 @@ public class PlayerControl : MonoBehaviour {
                     {
                         myAudio.Play();
                     }
-//                    if (jumpTime >= maxJumpTime)
-//                    {
-//                        DamagePlayer(Mathf.RoundToInt(10 * jumpTime), GameManager.AttackMode.melee);
-//                    }
                 }
             }
 
@@ -747,7 +707,7 @@ public class PlayerControl : MonoBehaviour {
 	void ToggleNightVision()
 	{
 		nightVision.enabled = !nightVision.enabled;
-        playerInventory.ToggleNightVision();
+        // playerInventory.ToggleNightVision();
 	}
 
 	/// <summary>
@@ -828,10 +788,6 @@ public class PlayerControl : MonoBehaviour {
 
     public void AssignPublicVariables()
     {
-        breathBar = GameObject.Find("Player Breath").GetComponent<Text>();
-        healthbar = GameObject.Find("Player Health").GetComponent<Text>();
-        pauseCanvas = GameObject.Find("Pause Canvas").GetComponent<Canvas>();
-        objectiveText = GameObject.Find("Objectives Text").GetComponent<Text>();
         devConsole = GetComponentInChildren<DevConsole>();
         manager = FindObjectOfType<LevelManager>();
     }

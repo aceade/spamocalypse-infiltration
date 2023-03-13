@@ -9,6 +9,7 @@ using System.Linq;
 /// Manages an actual level.
 /// </summary>
 
+[RequireComponent(typeof(AudioSource))]
 public class LevelManager: MonoBehaviour {
 	
 	// Music-related variables

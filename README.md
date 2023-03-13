@@ -8,6 +8,7 @@ I was a fairly junior software engineer when I started it, and my old code shows
 - Unused code
 - No testing beyond manual testing
 - Threading (for saving/loading games) relied on a third-party plugin from a tutorial site that eventually disappeared.
+- The code is _very_ tightly coupled, especially around anything involving the player.
 
 However, I learned a lot on it. So, I decided to redo it and update the graphics several years later.
 
