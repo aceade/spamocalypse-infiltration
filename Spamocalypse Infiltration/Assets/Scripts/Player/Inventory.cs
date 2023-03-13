@@ -36,11 +36,6 @@ public class Inventory : MonoBehaviour {
 
 	Weapon currentWeapon;
 
-	// GUI images
-	public Sprite sqlerAmmoImage;
-	public Sprite cuttersImage;
-	public Sprite sockpuppetsImage;
-
 	public Text weaponText;
 	public Image weaponImage;
 

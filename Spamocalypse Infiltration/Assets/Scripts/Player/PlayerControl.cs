@@ -698,10 +698,6 @@ public class PlayerControl : MonoBehaviour {
                     {
                         myAudio.Play();
                     }
-//                    if (jumpTime >= maxJumpTime)
-//                    {
-//                        DamagePlayer(Mathf.RoundToInt(10 * jumpTime), GameManager.AttackMode.melee);
-//                    }
                 }
             }
 
@@ -711,7 +707,7 @@ public class PlayerControl : MonoBehaviour {
 	void ToggleNightVision()
 	{
 		nightVision.enabled = !nightVision.enabled;
-        playerInventory.ToggleNightVision();
+        // playerInventory.ToggleNightVision();
 	}
 
 	/// <summary>
