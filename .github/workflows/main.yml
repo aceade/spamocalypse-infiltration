@@ -6,6 +6,13 @@ jobs:
   build:
     name: Build my project
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        targetPlatform:
+          - StandaloneWindows64 # Build a Windows 64-bit standalone.
+          - StandaloneLinux64 # Build a Linux 64-bit standalone.
+          - WebGL # WebGL.
     steps:
       # Checkout
       - name: Checkout repository
@@ -17,7 +24,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: 'Spamocalypse Infiltration/Library'
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key: Library-${{ matrix.targetPlatform }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
             Library-
 
@@ -37,5 +44,5 @@ jobs:
       # Output
       - uses: actions/upload-artifact@v2
         with:
-          name: Build
-          path: Spamocalypse Infiltration/build'
+          name: Build-${{ matrix.targetPlatform }}
+          path: Spamocalypse Infiltration/build/${{ matrix.targetPlatform }}'
