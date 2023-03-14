@@ -43,4 +43,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: Build-${{ matrix.targetPlatform }}
-          path: 'Spamocalypse Infiltration/build/${{ matrix.targetPlatform }}'
+          path: 'build/${{ matrix.targetPlatform }}'
