@@ -141,15 +141,11 @@ public class Weapon : MonoBehaviour
 
 	protected virtual void CheckHit(Transform hitTransform)
 	{
-		int hitLayer = hitTransform.gameObject.layer;
-		if (hitLayer == playerLayer)
-		{      
-			hitTransform.root.GetComponent<PlayerControl>().DamagePlayer(damage, myAttack);
-		}
-		else if (hitLayer == spammerLayer)
+		Transform collTrans = hitTransform.root;
+		var damageScript = collTrans.GetComponent<IDamage>();
+		if (damageScript != null)
 		{
-			hitTransform.root.GetComponent<SpammerFSM>().DamageSpammer(myAttack, damage, 
-			                                                           hitTransform.root.position - myTrans.position);
+			damageScript.Damage(GameTagManager.AttackMode.spam, damage, collTrans.position - transform.position);
 		}
 	}
 

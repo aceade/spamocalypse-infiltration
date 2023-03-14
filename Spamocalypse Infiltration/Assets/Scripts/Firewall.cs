@@ -28,7 +28,7 @@ public class Firewall : MonoBehaviour {
 	/// </summary>
 	public bool active;
 
-	List<SpammerFSM> victims = new List<SpammerFSM>();
+	List<IDamage> victims = new List<IDamage>();
 
 	/// <summary>
 	/// The player.
@@ -76,9 +76,7 @@ public class Firewall : MonoBehaviour {
 
 		for (int i = 0; i < victims.Count; i++)
 		{
-			SpammerFSM spammer = victims[i];
-			spammer.DamageSpammer(myAttack, damagePerSecond, 
-			                      (spammer.transform.position - myBounds.center).normalized);
+			victims[i].Damage(myAttack, damagePerSecond);
 		}
 
 	}
@@ -123,27 +121,11 @@ public class Firewall : MonoBehaviour {
 		}
 
 
-		if (coll.CompareTag(GameTagManager.playerTag) && active)
+		Transform collTrans = coll.transform.root;
+		var damageScript = collTrans.GetComponent<IDamage>();
+		if (damageScript != null)
 		{
-			player.DamagePlayer(damagePerSecond, myAttack);
-		}
-		else 
-		{
-			var spammer = coll.transform.root.GetComponent<SpammerFSM>();
-			if (spammer != null && !coll.isTrigger)
-			{
-				if (!victims.Contains (spammer))
-				{
-					victims.Add (spammer);
-					if (active)
-					{
-						GameTagManager.LogMessage("{0} is being set on fire", spammer);
-						spammer.DamageSpammer(myAttack, damagePerSecond, 
-						                      (spammer.transform.position - myBounds.center).normalized);
-					}
-				}
-			}         
-
+			victims.Add(damageScript);
 		}
 	}
 

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 /// </summary>
 
 [DisallowMultipleComponent]
-public class SpammerFSM : MonoBehaviour 
+public class SpammerFSM : MonoBehaviour, IDamage
 {
 	/// <summary>
 	/// The spammer's health.
@@ -293,7 +293,7 @@ public class SpammerFSM : MonoBehaviour
 
 			if (Mathf.Approximately(flameTime % 1f, 0))
 			{
-				DamageSpammer(GameTagManager.AttackMode.fire, GameTagManager.firewallDamagePerSecond, Vector3.zero);
+				Damage(GameTagManager.AttackMode.fire, GameTagManager.firewallDamagePerSecond);
 				
 				SetDestination(myTransform.forward * Random.Range(0, 11));
 			}
@@ -646,42 +646,6 @@ public class SpammerFSM : MonoBehaviour
 
 
 	/// <summary>
-	/// Damages the spammer with a particular type and value.
-	/// </summary>
-	/// <param name="damageType">Damage type.</param>
-	/// <param name="damage">Damage.</param>
-	/// <param name="direction">Direction from which the attack came.</param>
-	public void DamageSpammer(GameTagManager.AttackMode damageType, int damage, Vector3 direction)
-	{
-//		movement.SetKinematic(true);
-		if (alertStatus == DetectionStatus.unaware)
-		{
-			damage *= GameTagManager.surprisedDamageMultiplier;
-		}
-
-		health -= damage;
-
-		if (damageType == GameTagManager.AttackMode.fire)
-		{
-			ChangeStateTo(SpammerState.flamed);
-//			movement.SetKinematic(false);
-		}
-		else 
-		{
-			if (health < 0)
-			{
-				Die ();
-			}
-			else
-			{
-				myAudio.PlayDamagedSound();
-				SetAlert(myPosition - direction * 10f, DetectionStatus.possible, AlertType.other);
-//				movement.SetKinematic(false);
-			}
-		}
-	}
-
-	/// <summary>
 	/// Sets the spam times. If min or max time is zero, default to 10 and 30 seconds respectively.
 	/// </summary>
 	void SetSpamTimes()
@@ -786,4 +750,37 @@ public class SpammerFSM : MonoBehaviour
 	{
 		showQuestionMark = showMood;
 	}
+
+    public void Damage(GameTagManager.AttackMode attackMode, int damage)
+    {
+        Damage(attackMode, damage, Vector3.zero);
+    }
+
+    public void Damage(GameTagManager.AttackMode attackMode, int damage, Vector3 attackDirection)
+    {
+        if (alertStatus == DetectionStatus.unaware){
+			damage *= GameTagManager.surprisedDamageMultiplier;
+		}
+
+		
+
+		if (attackMode == GameTagManager.AttackMode.logic) {
+			ChangeStateTo(SpammerState.bamboozled);
+		}
+		else if (attackMode == GameTagManager.AttackMode.fire) {
+			ChangeStateTo(SpammerState.flamed);
+		}
+		else  {
+			health -= damage;
+			if (health < 0)
+			{
+				Die ();
+			}
+			else
+			{
+				myAudio.PlayDamagedSound();
+				SetAlert(myPosition - attackDirection * 10f, DetectionStatus.possible, AlertType.other);
+			}
+		}
+    }
 }

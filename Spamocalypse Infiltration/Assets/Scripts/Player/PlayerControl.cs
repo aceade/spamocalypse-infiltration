@@ -9,7 +9,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CalculateLight))]
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(PlayerMap))]
-public class PlayerControl : MonoBehaviour {
+public class PlayerControl : MonoBehaviour , IDamage{
 
 	Transform myTransform;
 	Rigidbody myBody;
@@ -535,23 +535,6 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Damages the player.
-	/// </summary>
-	/// <param name="damage">Damage.</param>
-	/// <param name="type">Type.</param>
-	public void DamagePlayer(int damage, GameTagManager.AttackMode type)
-	{
-		GameTagManager.LogMessage("Player took {0} points of {1} damage", damage, type);
-		health -= Mathf.RoundToInt(damage * GameTagManager.GetDifficultyMultiplier());
-		uiManager.ShowPlayerHealth(health);
-
-		if (health <= 0)
-		{
-			manager.FailMission(true);
-		}
-	}
-
-	/// <summary>
 	/// Pauses the game.
 	/// </summary>
 	public void PauseGame()
@@ -792,4 +775,20 @@ public class PlayerControl : MonoBehaviour {
         manager = FindObjectOfType<LevelManager>();
     }
 
+    public void Damage(GameTagManager.AttackMode attackMode, int damage)
+    {
+        GameTagManager.LogMessage("Player took {0} points of {1} damage", damage, attackMode);
+		health -= Mathf.RoundToInt(damage * GameTagManager.GetDifficultyMultiplier());
+		uiManager.ShowPlayerHealth(health);
+
+		if (health <= 0)
+		{
+			manager.FailMission(true);
+		}
+    }
+
+    public void Damage(GameTagManager.AttackMode attackMode, int damage, Vector3 attackDirection)
+    {
+        Damage(attackMode, damage);
+    }
 }

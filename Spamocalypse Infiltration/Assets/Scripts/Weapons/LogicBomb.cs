@@ -10,12 +10,8 @@ public class LogicBomb : Projectile {
 
 	public float launchSpeed = 20f;
 
-	int playerLayer, spammerLayer;
-
 	protected new void Start()
 	{
-		playerLayer = LayerMask.NameToLayer("Player");
-		spammerLayer = LayerMask.NameToLayer("Spammer");
 		base.Start();
 	}
 	
@@ -25,14 +21,11 @@ public class LogicBomb : Projectile {
 		Collider[] colliders = Physics.OverlapSphere(transform.position, bombRadius);
 		foreach (Collider collidee in colliders)
 		{
-			if (collidee.gameObject.layer == playerLayer)
+			var collTrans = collidee.transform.root;
+			var damageScript = collTrans.GetComponent<IDamage>();
+			if (damageScript != null)
 			{
-				collidee.transform.root.GetComponent<PlayerControl>().DamagePlayer(logicDamage, GameTagManager.AttackMode.logic);
-			}
-			else if (collidee.gameObject.layer == spammerLayer)
-			{
-                // TODO: stop this happeneing multiple times
-				collidee.transform.root.GetComponent<SpammerFSM>().ChangeStateTo(SpammerFSM.SpammerState.bamboozled);
+				damageScript.Damage(GameTagManager.AttackMode.logic, logicDamage, collTrans.position - transform.position);
 			}
 		}
         base.PlayHitEffects(coll);

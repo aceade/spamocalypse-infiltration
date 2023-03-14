@@ -24,19 +24,11 @@ public class SqlRound : Projectile {
 	{
         GameTagManager.LogMessage("{0} hit {1}", this, coll);
 		Transform collTrans = coll.transform.root;
-		if (coll.gameObject.layer == playerLayer)
-		{
-			collTrans.GetComponent<PlayerControl>().DamagePlayer(damage, GameTagManager.AttackMode.sql);
-            myAudio.clip = hitNoises[1];
-		}
-		else if (coll.gameObject.layer == spammerLayer)
-		{
-			collTrans.GetComponent<SpammerFSM>().DamageSpammer(GameTagManager.AttackMode.sql, damage, 
-                    collTrans.position - transform.position);
-            myAudio.clip = hitNoises[1];
-		}
-        else 
-        {
+		var damageScript = collTrans.GetComponent<IDamage>();
+		if (damageScript != null) {
+			myAudio.clip = hitNoises[1];
+			damageScript.Damage(GameTagManager.AttackMode.sql, damage, collTrans.position - transform.position);
+		} else {
             myAudio.clip = hitNoises[0];
         }
         myAudio.Play();

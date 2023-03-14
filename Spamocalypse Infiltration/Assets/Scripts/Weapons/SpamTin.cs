@@ -22,13 +22,10 @@ public class SpamTin : Projectile {
 	protected override void PlayHitEffects(Collider coll)
 	{
 		Transform collTrans = coll.transform.root;
-		if (coll.gameObject.layer == playerLayer)
+		var damageScript = collTrans.GetComponent<IDamage>();
+		if (damageScript != null)
 		{
-			collTrans.GetComponent<PlayerControl>().DamagePlayer(damage, GameTagManager.AttackMode.spam);
-		}
-		else if (coll.gameObject.layer == spammerLayer)
-		{
-			collTrans.GetComponent<SpammerFSM>().DamageSpammer(GameTagManager.AttackMode.spam, damage, collTrans.position - transform.position);
+			damageScript.Damage(GameTagManager.AttackMode.spam, damage, collTrans.position - transform.position);
 		}
         base.PlayHitEffects(coll);
 	}
